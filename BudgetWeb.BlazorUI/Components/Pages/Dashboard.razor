@@ -1,0 +1,98 @@
+@page "/"
+@page "/dashboard"
+
+<PageTitle>Dashboard</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Dashboard</MudText>
+
+<MudGrid>
+    <!-- Stats Cards -->
+    <MudItem xs="12" sm="6" md="3">
+        <MudCard Elevation="2">
+            <MudCardContent>
+                <MudText Typo="Typo.overline" Color="Color.Secondary">Total Budgets</MudText>
+                <MudText Typo="Typo.h3">@_stats.TotalBudgets</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudCard Elevation="2">
+            <MudCardContent>
+                <MudText Typo="Typo.overline" Color="Color.Secondary">Active Projects</MudText>
+                <MudText Typo="Typo.h3">@_stats.ActiveProjects</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudCard Elevation="2">
+            <MudCardContent>
+                <MudText Typo="Typo.overline" Color="Color.Secondary">Transactions</MudText>
+                <MudText Typo="Typo.h3">@_stats.TotalTransactions</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudCard Elevation="2">
+            <MudCardContent>
+                <MudText Typo="Typo.overline" Color="Color.Secondary">Utilization Rate</MudText>
+                <MudText Typo="Typo.h3">@_stats.UtilizationRate.ToString("F1")%</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
+    <!-- Charts Placeholder -->
+    <MudItem xs="12" md="8">
+        <MudPaper Class="pa-4" Elevation="2">
+            <MudText Typo="Typo.h6" GutterBottom="true">Monthly Spending Trend</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">Chart implementation coming soon...</MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" md="4">
+        <MudPaper Class="pa-4" Elevation="2">
+            <MudText Typo="Typo.h6" GutterBottom="true">Budget by Category</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">Chart implementation coming soon...</MudText>
+        </MudPaper>
+    </MudItem>
+
+    <!-- Recent Activity -->
+    <MudItem xs="12">
+        <MudPaper Class="pa-4" Elevation="2">
+            <MudText Typo="Typo.h6" GutterBottom="true">Recent Activity</MudText>
+            <MudList T="string">
+                <MudListItem T="string" Icon="@Icons.Material.Filled.AccountBalanceWallet">
+                    Budget "2025 Q1 Budget" was activated
+                </MudListItem>
+                <MudListItem T="string" Icon="@Icons.Material.Filled.Receipt">
+                    New transaction created: $5,000
+                </MudListItem>
+                <MudListItem T="string" Icon="@Icons.Material.Filled.Work">
+                    Project "IT Infrastructure" updated
+                </MudListItem>
+            </MudList>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private DashboardStats _stats = new DashboardStats
+    {
+        TotalBudgets = 12,
+        ActiveProjects = 10,
+        TotalTransactions = 247,
+        UtilizationRate = 70.3m
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        // TODO: Fetch real data from API
+        await Task.CompletedTask;
+    }
+
+    private class DashboardStats
+    {
+        public int TotalBudgets { get; set; }
+        public int ActiveProjects { get; set; }
+        public int TotalTransactions { get; set; }
+        public decimal UtilizationRate { get; set; }
+    }
+}

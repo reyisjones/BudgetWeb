@@ -1,0 +1,99 @@
+@page "/budgets"
+
+<PageTitle>Budgets</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Budgets</MudText>
+
+<MudPaper Class="pa-4" Elevation="2">
+    <MudTable Items="@_budgets" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Period</MudTh>
+            <MudTh>Total Amount</MudTh>
+            <MudTh>Spent</MudTh>
+            <MudTh>Utilization</MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Period">@context.Period</MudTd>
+            <MudTd DataLabel="Total Amount">$@context.TotalAmount.ToString("N0")</MudTd>
+            <MudTd DataLabel="Spent">$@context.SpentAmount.ToString("N0")</MudTd>
+            <MudTd DataLabel="Utilization">
+                <MudChip T="string" Color="GetUtilizationColor(context)" Size="Size.Small">
+                    @((context.SpentAmount / context.TotalAmount * 100).ToString("F1"))%
+                </MudChip>
+            </MudTd>
+            <MudTd DataLabel="Status">
+                <MudChip T="string" Color="GetStatusColor(context.Status)" Size="Size.Small">@context.Status</MudChip>
+            </MudTd>
+            <MudTd DataLabel="Actions">
+                <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Primary" Size="Size.Small" Href="@($"/budgets/{context.Id}")" />
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteBudget(context.Id))" />
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudPaper>
+
+<MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Label="Create Budget" Class="mt-4" />
+
+@code {
+    private bool _loading = true;
+    private List<BudgetItem> _budgets = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadBudgets();
+    }
+
+    private async Task LoadBudgets()
+    {
+        _loading = true;
+        // TODO: Load from API
+        _budgets = new List<BudgetItem>
+        {
+            new BudgetItem { Id = "1", Name = "2025 Q1 Budget", Period = "Quarterly", TotalAmount = 250000, SpentAmount = 175000, Status = "Active" },
+            new BudgetItem { Id = "2", Name = "Marketing Campaign 2025", Period = "Annual", TotalAmount = 150000, SpentAmount = 45000, Status = "Active" },
+            new BudgetItem { Id = "3", Name = "IT Infrastructure", Period = "Annual", TotalAmount = 500000, SpentAmount = 320000, Status = "Active" },
+        };
+        _loading = false;
+        await Task.CompletedTask;
+    }
+
+    private Color GetUtilizationColor(BudgetItem budget)
+    {
+        var percentage = budget.SpentAmount / budget.TotalAmount * 100;
+        if (percentage >= 90) return Color.Error;
+        if (percentage >= 75) return Color.Warning;
+        return Color.Success;
+    }
+
+    private Color GetStatusColor(string status)
+    {
+        return status.ToLower() switch
+        {
+            "active" => Color.Success,
+            "completed" => Color.Info,
+            "draft" => Color.Warning,
+            _ => Color.Default
+        };
+    }
+
+    private async Task DeleteBudget(string id)
+    {
+        // TODO: Implement delete
+        await Task.CompletedTask;
+    }
+
+    private class BudgetItem
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Period { get; set; } = string.Empty;
+        public decimal TotalAmount { get; set; }
+        public decimal SpentAmount { get; set; }
+        public string Status { get; set; } = string.Empty;
+    }
+}

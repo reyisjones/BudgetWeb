@@ -1,10 +1,20 @@
 using BudgetWeb.BlazorUI.Components;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// Add MudBlazor services
+builder.Services.AddMudServices();
+
+// Add HttpClient for API calls
+builder.Services.AddHttpClient("BudgetWebAPI", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:5001/api/");
+});
 
 var app = builder.Build();
 
