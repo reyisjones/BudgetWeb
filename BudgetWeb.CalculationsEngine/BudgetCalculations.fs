@@ -411,3 +411,598 @@ module BudgetOptimization =
     let contributionMarginRatio (revenue: decimal) (variableCosts: decimal) : decimal option =
         if revenue = 0m then None
         else Some ((revenue - variableCosts) / revenue * 100m)
+
+
+/// Mortgage and loan calculations
+module MortgageCalculations =
+    
+    type PaymentFrequency = Monthly | BiWeekly | Weekly
+    
+    type MortgagePayment = {
+        PaymentNumber: int
+        PaymentAmount: decimal
+        PrincipalPortion: decimal
+        InterestPortion: decimal
+        RemainingBalance: decimal
+        CumulativeInterest: decimal
+        CumulativePrincipal: decimal
+    }
+    
+    type MortgageSummary = {
+        LoanAmount: decimal
+        InterestRate: decimal
+        TermYears: int
+        PaymentFrequency: PaymentFrequency
+        RegularPayment: decimal
+        TotalPayments: int
+        TotalInterest: decimal
+        TotalPaid: decimal
+        PayoffDate: DateTime option
+    }
+    
+    /// Calculate mortgage payment amount
+    let calculateMortgagePayment (principal: decimal) (annualRate: decimal) (years: int) (frequency: PaymentFrequency) : decimal =
+        if principal <= 0m || annualRate < 0m || years <= 0 then 0m
+        else
+            let (periodsPerYear, paymentsTotal) = 
+                match frequency with
+                | Monthly -> (12, years * 12)
+                | BiWeekly -> (26, years * 26)
+                | Weekly -> (52, years * 52)
+            
+            let periodicRate = annualRate / decimal periodsPerYear / 100m
+            
+            if periodicRate = 0m then
+                principal / decimal paymentsTotal
+            else
+                let rate = float periodicRate
+                let n = float paymentsTotal
+                let p = float principal
+                let payment = p * (rate * (1.0 + rate) ** n) / ((1.0 + rate) ** n - 1.0)
+                decimal payment
+    
+    /// Generate full mortgage amortization schedule
+    let generateMortgageSchedule (principal: decimal) (annualRate: decimal) (years: int) (frequency: PaymentFrequency) (extraPayment: decimal) : MortgagePayment list =
+        let regularPayment = calculateMortgagePayment principal annualRate years frequency
+        let totalPayment = regularPayment + extraPayment
+        
+        let (periodsPerYear, _) = 
+            match frequency with
+            | Monthly -> (12, years * 12)
+            | BiWeekly -> (26, years * 26)
+            | Weekly -> (52, years * 52)
+        
+        let periodicRate = annualRate / decimal periodsPerYear / 100m
+        
+        let rec buildSchedule paymentNum balance cumulativeInt cumulativePrin acc =
+            if balance <= 0m then List.rev acc
+            else
+                let interestPortion = balance * periodicRate
+                let principalPortion = min (totalPayment - interestPortion) balance
+                let actualPayment = principalPortion + interestPortion
+                let newBalance = balance - principalPortion
+                let newCumulativeInt = cumulativeInt + interestPortion
+                let newCumulativePrin = cumulativePrin + principalPortion
+                
+                let payment = {
+                    PaymentNumber = paymentNum
+                    PaymentAmount = actualPayment
+                    PrincipalPortion = principalPortion
+                    InterestPortion = interestPortion
+                    RemainingBalance = newBalance
+                    CumulativeInterest = newCumulativeInt
+                    CumulativePrincipal = newCumulativePrin
+                }
+                
+                buildSchedule (paymentNum + 1) newBalance newCumulativeInt newCumulativePrin (payment :: acc)
+        
+        buildSchedule 1 principal 0m 0m []
+    
+    /// Calculate mortgage summary with extra payments
+    let calculateMortgageSummary (principal: decimal) (annualRate: decimal) (years: int) (frequency: PaymentFrequency) (extraPayment: decimal) (startDate: DateTime option) : MortgageSummary =
+        let schedule = generateMortgageSchedule principal annualRate years frequency extraPayment
+        let regularPayment = calculateMortgagePayment principal annualRate years frequency
+        
+        let totalInterest = 
+            schedule 
+            |> List.sumBy (fun p -> p.InterestPortion)
+        
+        let totalPaid = 
+            schedule 
+            |> List.sumBy (fun p -> p.PaymentAmount)
+        
+        let payoffDate =
+            match startDate with
+            | Some start ->
+                let months = 
+                    match frequency with
+                    | Monthly -> schedule.Length
+                    | BiWeekly -> schedule.Length / 2
+                    | Weekly -> schedule.Length / 4
+                Some (start.AddMonths(months))
+            | None -> None
+        
+        {
+            LoanAmount = principal
+            InterestRate = annualRate
+            TermYears = years
+            PaymentFrequency = frequency
+            RegularPayment = regularPayment
+            TotalPayments = schedule.Length
+            TotalInterest = totalInterest
+            TotalPaid = totalPaid
+            PayoffDate = payoffDate
+        }
+    
+    /// Calculate time and interest saved with extra payments
+    let calculatePayoffAcceleration (principal: decimal) (annualRate: decimal) (years: int) (frequency: PaymentFrequency) (extraPayment: decimal) : (int * decimal * decimal) =
+        let regularSchedule = generateMortgageSchedule principal annualRate years frequency 0m
+        let acceleratedSchedule = generateMortgageSchedule principal annualRate years frequency extraPayment
+        
+        let paymentsSaved = regularSchedule.Length - acceleratedSchedule.Length
+        let regularInterest = regularSchedule |> List.sumBy (fun p -> p.InterestPortion)
+        let acceleratedInterest = acceleratedSchedule |> List.sumBy (fun p -> p.InterestPortion)
+        let interestSaved = regularInterest - acceleratedInterest
+        
+        (paymentsSaved, interestSaved, regularInterest)
+
+
+/// Car and auto loan calculations
+module CarLoanCalculations =
+    
+    type CarLoanDetails = {
+        VehiclePrice: decimal
+        DownPayment: decimal
+        TradeInValue: decimal
+        LoanAmount: decimal
+        InterestRate: decimal
+        TermMonths: int
+        MonthlyPayment: decimal
+        TotalInterest: decimal
+        TotalCost: decimal
+        SalesTax: decimal
+        Fees: decimal
+    }
+    
+    /// Calculate car loan with all fees and taxes
+    let calculateCarLoan (vehiclePrice: decimal) (downPayment: decimal) (tradeInValue: decimal) (salesTaxRate: decimal) (fees: decimal) (annualRate: decimal) (termMonths: int) : CarLoanDetails =
+        let salesTax = vehiclePrice * (salesTaxRate / 100m)
+        let totalPrice = vehiclePrice + salesTax + fees
+        let loanAmount = totalPrice - downPayment - tradeInValue
+        
+        let monthlyRate = annualRate / 12m / 100m
+        let monthlyPayment =
+            if monthlyRate = 0m then
+                loanAmount / decimal termMonths
+            else
+                let rate = float monthlyRate
+                let n = float termMonths
+                let p = float loanAmount
+                let payment = p * (rate * (1.0 + rate) ** n) / ((1.0 + rate) ** n - 1.0)
+                decimal payment
+        
+        let totalPaid = monthlyPayment * decimal termMonths
+        let totalInterest = totalPaid - loanAmount
+        let totalCost = downPayment + tradeInValue + totalPaid
+        
+        {
+            VehiclePrice = vehiclePrice
+            DownPayment = downPayment
+            TradeInValue = tradeInValue
+            LoanAmount = loanAmount
+            InterestRate = annualRate
+            TermMonths = termMonths
+            MonthlyPayment = monthlyPayment
+            TotalInterest = totalInterest
+            TotalCost = totalCost
+            SalesTax = salesTax
+            Fees = fees
+        }
+    
+    /// Compare lease vs buy decision
+    let compareLeaseToBuy (vehiclePrice: decimal) (leaseMonthlyPayment: decimal) (leaseTermMonths: int) (buyMonthlyPayment: decimal) (buyTermMonths: int) (residualValue: decimal) : (decimal * decimal * decimal) =
+        let totalLeaseCost = leaseMonthlyPayment * decimal leaseTermMonths
+        let totalBuyCost = buyMonthlyPayment * decimal buyTermMonths
+        let equityGained = vehiclePrice - totalBuyCost + residualValue
+        
+        (totalLeaseCost, totalBuyCost, equityGained)
+
+
+/// Student loan calculations
+module StudentLoanCalculations =
+    
+    type RepaymentPlan = Standard | GraduatedRepayment | ExtendedRepayment | IncomeBasedRepayment
+    
+    type StudentLoanSummary = {
+        LoanBalance: decimal
+        InterestRate: decimal
+        Plan: RepaymentPlan
+        MonthlyPayment: decimal
+        TotalPayments: int
+        TotalInterest: decimal
+        TotalPaid: decimal
+        InterestCapitalization: decimal
+    }
+    
+    /// Calculate student loan payment under standard plan
+    let calculateStudentLoanPayment (principal: decimal) (annualRate: decimal) (termYears: int) : decimal =
+        let monthlyRate = annualRate / 12m / 100m
+        let numPayments = termYears * 12
+        
+        if monthlyRate = 0m then
+            principal / decimal numPayments
+        else
+            let rate = float monthlyRate
+            let n = float numPayments
+            let p = float principal
+            let payment = p * (rate * (1.0 + rate) ** n) / ((1.0 + rate) ** n - 1.0)
+            decimal payment
+    
+    /// Calculate income-based repayment (simplified)
+    let calculateIncomeBasedPayment (annualIncome: decimal) (familySize: int) (discretionaryIncomePercent: decimal) : decimal =
+        let povertyGuideline = 
+            match familySize with
+            | 1 -> 15060m
+            | 2 -> 20440m
+            | 3 -> 25820m
+            | 4 -> 31200m
+            | n -> 31200m + (decimal (n - 4) * 5380m)
+        
+        let discretionaryIncome = max 0m (annualIncome - (povertyGuideline * 1.5m))
+        let monthlyPayment = (discretionaryIncome * discretionaryIncomePercent / 100m) / 12m
+        monthlyPayment
+    
+    /// Calculate total interest with grace period and deferment
+    let calculateStudentLoanWithDeferment (principal: decimal) (annualRate: decimal) (gracePeriodMonths: int) (defermentMonths: int) (termYears: int) : StudentLoanSummary =
+        let monthlyRate = annualRate / 12m / 100m
+        
+        // Interest accrued during grace and deferment (capitalized)
+        let gracePeriodInterest = principal * monthlyRate * decimal gracePeriodMonths
+        let defermentInterest = (principal + gracePeriodInterest) * monthlyRate * decimal defermentMonths
+        let capitalizedInterest = gracePeriodInterest + defermentInterest
+        let newPrincipal = principal + capitalizedInterest
+        
+        let monthlyPayment = calculateStudentLoanPayment newPrincipal annualRate termYears
+        let numPayments = termYears * 12
+        let totalPaid = monthlyPayment * decimal numPayments
+        let totalInterest = totalPaid - newPrincipal + capitalizedInterest
+        
+        {
+            LoanBalance = newPrincipal
+            InterestRate = annualRate
+            Plan = Standard
+            MonthlyPayment = monthlyPayment
+            TotalPayments = numPayments
+            TotalInterest = totalInterest
+            TotalPaid = totalPaid
+            InterestCapitalization = capitalizedInterest
+        }
+    
+    /// Calculate loan forgiveness timeline (Public Service Loan Forgiveness)
+    let calculateLoanForgiveness (principal: decimal) (annualRate: decimal) (monthlyPayment: decimal) (forgivenessMonths: int) : (decimal * decimal * decimal) =
+        let monthlyRate = annualRate / 12m / 100m
+        
+        let rec accumulatePayments month balance totalPaid totalInterest =
+            if month >= forgivenessMonths || balance <= 0m then
+                (balance, totalPaid, totalInterest)
+            else
+                let interest = balance * monthlyRate
+                let principal = monthlyPayment - interest
+                let newBalance = max 0m (balance - principal)
+                accumulatePayments (month + 1) newBalance (totalPaid + monthlyPayment) (totalInterest + interest)
+        
+        let (remainingBalance, totalPaid, totalInterest) = accumulatePayments 0 principal 0m 0m
+        (remainingBalance, totalPaid, totalInterest)
+
+
+/// Debt analysis and optimization
+module DebtAnalysis =
+    
+    type DebtItem = {
+        Name: string
+        Balance: decimal
+        InterestRate: decimal
+        MinimumPayment: decimal
+    }
+    
+    type DebtSummary = {
+        TotalDebt: decimal
+        WeightedAverageRate: decimal
+        TotalMinimumPayment: decimal
+        DebtToIncomeRatio: decimal option
+        MonthsToPayoff: int
+        TotalInterest: decimal
+    }
+    
+    /// Calculate debt-to-income ratio
+    let calculateDebtToIncomeRatio (monthlyDebtPayments: decimal) (monthlyGrossIncome: decimal) : decimal option =
+        if monthlyGrossIncome <= 0m then None
+        else Some ((monthlyDebtPayments / monthlyGrossIncome) * 100m)
+    
+    /// Calculate weighted average interest rate
+    let calculateWeightedAverageRate (debts: DebtItem list) : decimal =
+        let totalDebt = debts |> List.sumBy (fun d -> d.Balance)
+        if totalDebt = 0m then 0m
+        else
+            debts
+            |> List.sumBy (fun d -> d.Balance * d.InterestRate)
+            |> fun total -> total / totalDebt
+    
+    /// Debt avalanche method (highest interest first)
+    let debtAvalanche (debts: DebtItem list) (extraPayment: decimal) : (string * int * decimal) list =
+        let sortedDebts = debts |> List.sortByDescending (fun d -> d.InterestRate)
+        
+        let rec payoffDebt remainingDebts monthsElapsed totalInterest results =
+            match remainingDebts with
+            | [] -> List.rev results
+            | debt :: rest ->
+                let monthlyRate = debt.InterestRate / 12m / 100m
+                let payment = debt.MinimumPayment + extraPayment
+                
+                let rec payoffSingleDebt balance months interest =
+                    if balance <= 0m then (months, interest)
+                    else
+                        let interestCharge = balance * monthlyRate
+                        let principalPayment = min (payment - interestCharge) balance
+                        let newBalance = balance - principalPayment
+                        payoffSingleDebt newBalance (months + 1) (interest + interestCharge)
+                
+                let (monthsToPayoff, interestPaid) = payoffSingleDebt debt.Balance 0 0m
+                let result = (debt.Name, monthsToPayoff, interestPaid)
+                payoffDebt rest (monthsElapsed + monthsToPayoff) (totalInterest + interestPaid) (result :: results)
+        
+        payoffDebt sortedDebts 0 0m []
+    
+    /// Debt snowball method (smallest balance first)
+    let debtSnowball (debts: DebtItem list) (extraPayment: decimal) : (string * int * decimal) list =
+        let sortedDebts = debts |> List.sortBy (fun d -> d.Balance)
+        debtAvalanche sortedDebts extraPayment // Same logic, different sort
+
+
+/// Savings and investment calculations
+module SavingsCalculations =
+    
+    type SavingsGoal = {
+        TargetAmount: decimal
+        CurrentSavings: decimal
+        MonthlyContribution: decimal
+        AnnualReturnRate: decimal
+        MonthsToGoal: int
+        TotalContributions: decimal
+        TotalInterestEarned: decimal
+    }
+    
+    type InvestmentProjection = {
+        InitialInvestment: decimal
+        MonthlyContribution: decimal
+        AnnualReturnRate: decimal
+        Years: int
+        FutureValue: decimal
+        TotalContributions: decimal
+        TotalGains: decimal
+    }
+    
+    /// Calculate savings goal timeline
+    let calculateSavingsGoal (targetAmount: decimal) (currentSavings: decimal) (monthlyContribution: decimal) (annualRate: decimal) : SavingsGoal option =
+        if monthlyContribution <= 0m then None
+        else
+            let monthlyRate = annualRate / 12m / 100m
+            
+            let rec calculateMonths balance months totalContrib totalInterest =
+                if balance >= targetAmount then
+                    Some {
+                        TargetAmount = targetAmount
+                        CurrentSavings = currentSavings
+                        MonthlyContribution = monthlyContribution
+                        AnnualReturnRate = annualRate
+                        MonthsToGoal = months
+                        TotalContributions = totalContrib
+                        TotalInterestEarned = totalInterest
+                    }
+                elif months > 1200 then None // Cap at 100 years
+                else
+                    let interest = balance * monthlyRate
+                    let newBalance = balance + monthlyContribution + interest
+                    calculateMonths newBalance (months + 1) (totalContrib + monthlyContribution) (totalInterest + interest)
+            
+            calculateMonths currentSavings 0 0m 0m
+    
+    /// Calculate future value of investment with regular contributions
+    let calculateInvestmentProjection (initialInvestment: decimal) (monthlyContribution: decimal) (annualRate: decimal) (years: int) : InvestmentProjection =
+        let monthlyRate = annualRate / 12m / 100m
+        let numMonths = years * 12
+        
+        let rec accumulate month balance totalContrib =
+            if month >= numMonths then (balance, totalContrib)
+            else
+                let interest = balance * monthlyRate
+                let newBalance = balance + monthlyContribution + interest
+                accumulate (month + 1) newBalance (totalContrib + monthlyContribution)
+        
+        let (futureValue, totalContributions) = accumulate 0 initialInvestment 0m
+        let totalGains = futureValue - initialInvestment - totalContributions
+        
+        {
+            InitialInvestment = initialInvestment
+            MonthlyContribution = monthlyContribution
+            AnnualReturnRate = annualRate
+            Years = years
+            FutureValue = futureValue
+            TotalContributions = totalContributions
+            TotalGains = totalGains
+        }
+    
+    /// Calculate compound interest with different compounding frequencies
+    let calculateCompoundInterestAdvanced (principal: decimal) (annualRate: decimal) (years: int) (compoundingsPerYear: int) : decimal =
+        let rate = float annualRate / 100.0
+        let n = float compoundingsPerYear
+        let t = float years
+        let p = float principal
+        let futureValue = p * (1.0 + rate / n) ** (n * t)
+        decimal futureValue
+    
+    /// Calculate required monthly savings to reach goal
+    let calculateRequiredMonthlySavings (targetAmount: decimal) (currentSavings: decimal) (annualRate: decimal) (years: int) : decimal option =
+        let monthlyRate = annualRate / 12m / 100m
+        let numMonths = years * 12
+        
+        if numMonths <= 0 then None
+        else
+            // Future value of current savings
+            let fvCurrentSavings = 
+                if monthlyRate = 0m then currentSavings
+                else 
+                    let rate = float monthlyRate
+                    let n = float numMonths
+                    let cs = float currentSavings
+                    decimal (cs * (1.0 + rate) ** n)
+            
+            let remainingNeeded = targetAmount - fvCurrentSavings
+            
+            if remainingNeeded <= 0m then Some 0m
+            elif monthlyRate = 0m then Some (remainingNeeded / decimal numMonths)
+            else
+                // PMT formula: PMT = FV * r / ((1 + r)^n - 1)
+                let rate = float monthlyRate
+                let n = float numMonths
+                let fv = float remainingNeeded
+                let pmt = fv * rate / ((1.0 + rate) ** n - 1.0)
+                Some (decimal pmt)
+
+
+/// Refinance and comparison calculations
+module RefinanceCalculations =
+    
+    type RefinanceComparison = {
+        CurrentLoan: MortgageCalculations.MortgageSummary
+        NewLoan: MortgageCalculations.MortgageSummary
+        ClosingCosts: decimal
+        BreakEvenMonths: int
+        MonthlyPaymentSavings: decimal
+        TotalInterestSavings: decimal
+        NetSavings: decimal
+        IsWorthwhile: bool
+    }
+    
+    /// Compare current loan to refinance option
+    let compareRefinance 
+        (currentBalance: decimal) 
+        (currentRate: decimal) 
+        (currentRemainingMonths: int)
+        (newRate: decimal)
+        (newTermYears: int)
+        (closingCosts: decimal) : RefinanceComparison =
+        
+        let currentYears = currentRemainingMonths / 12
+        let currentSummary = MortgageCalculations.calculateMortgageSummary currentBalance currentRate currentYears MortgageCalculations.Monthly 0m None
+        let newSummary = MortgageCalculations.calculateMortgageSummary currentBalance newRate newTermYears MortgageCalculations.Monthly 0m None
+        
+        let monthlyPaymentSavings = currentSummary.RegularPayment - newSummary.RegularPayment
+        let totalInterestSavings = currentSummary.TotalInterest - newSummary.TotalInterest
+        let netSavings = totalInterestSavings - closingCosts
+        
+        let breakEvenMonths =
+            if monthlyPaymentSavings <= 0m then 9999
+            else int (Math.Ceiling(float (closingCosts / monthlyPaymentSavings)))
+        
+        let isWorthwhile = netSavings > 0m && breakEvenMonths < (newTermYears * 12)
+        
+        {
+            CurrentLoan = currentSummary
+            NewLoan = newSummary
+            ClosingCosts = closingCosts
+            BreakEvenMonths = breakEvenMonths
+            MonthlyPaymentSavings = monthlyPaymentSavings
+            TotalInterestSavings = totalInterestSavings
+            NetSavings = netSavings
+            IsWorthwhile = isWorthwhile
+        }
+    
+    /// Calculate effective interest rate including fees
+    let calculateEffectiveRate (loanAmount: decimal) (nominalRate: decimal) (fees: decimal) (termYears: int) : decimal =
+        let totalCost = loanAmount + fees
+        let effectiveAmount = loanAmount - fees
+        
+        if effectiveAmount <= 0m then nominalRate
+        else
+            // Approximate effective rate
+            let feePercentage = (fees / loanAmount) * 100m
+            let annualizedFee = feePercentage / decimal termYears
+            nominalRate + annualizedFee
+
+
+/// Budget category analysis
+module BudgetCategoryAnalyzer =
+    
+    type CategorySpending = {
+        CategoryName: string
+        BudgetedAmount: decimal
+        ActualSpent: decimal
+        Variance: decimal
+        VariancePercent: decimal
+        PercentOfTotal: decimal
+    }
+    
+    type BudgetAnalysis = {
+        TotalBudgeted: decimal
+        TotalSpent: decimal
+        TotalVariance: decimal
+        OverspentCategories: CategorySpending list
+        UnderspentCategories: CategorySpending list
+        OnTrackCategories: CategorySpending list
+        Recommendations: string list
+    }
+    
+    /// Analyze spending patterns by category
+    let analyzeCategorySpending (categories: (string * decimal * decimal) list) : BudgetAnalysis =
+        let totalBudgeted = categories |> List.sumBy (fun (_, budgeted, _) -> budgeted)
+        let totalSpent = categories |> List.sumBy (fun (_, _, spent) -> spent)
+        let totalVariance = totalSpent - totalBudgeted
+        
+        let categoryDetails =
+            categories
+            |> List.map (fun (name, budgeted, spent) ->
+                let variance = spent - budgeted
+                let variancePercent = if budgeted = 0m then 0m else (variance / budgeted * 100m)
+                let percentOfTotal = if totalSpent = 0m then 0m else (spent / totalSpent * 100m)
+                {
+                    CategoryName = name
+                    BudgetedAmount = budgeted
+                    ActualSpent = spent
+                    Variance = variance
+                    VariancePercent = variancePercent
+                    PercentOfTotal = percentOfTotal
+                })
+        
+        let overspent = categoryDetails |> List.filter (fun c -> c.Variance > c.BudgetedAmount * 0.05m)
+        let underspent = categoryDetails |> List.filter (fun c -> c.Variance < -c.BudgetedAmount * 0.05m)
+        let onTrack = categoryDetails |> List.filter (fun c -> abs c.Variance <= c.BudgetedAmount * 0.05m)
+        
+        let recommendations =
+            [
+                if totalVariance > 0m then "Overall spending exceeds budget. Consider reducing discretionary expenses."
+                if overspent.Length > 0 then sprintf "Focus on reducing spending in: %s" (overspent |> List.map (fun c -> c.CategoryName) |> String.concat ", ")
+                if underspent.Length > 0 then sprintf "Consider reallocating funds from: %s" (underspent |> List.map (fun c -> c.CategoryName) |> String.concat ", ")
+                if totalVariance < 0m && abs totalVariance > totalBudgeted * 0.1m then "Great job staying under budget! Consider increasing savings."
+            ]
+        
+        {
+            TotalBudgeted = totalBudgeted
+            TotalSpent = totalSpent
+            TotalVariance = totalVariance
+            OverspentCategories = overspent
+            UnderspentCategories = underspent
+            OnTrackCategories = onTrack
+            Recommendations = recommendations
+        }
+    
+    /// Calculate recommended budget adjustments
+    let recommendBudgetAdjustments (categories: (string * decimal * decimal) list) (targetTotalBudget: decimal) : (string * decimal * decimal) list =
+        let currentTotal = categories |> List.sumBy (fun (_, budgeted, _) -> budgeted)
+        let adjustmentRatio = targetTotalBudget / currentTotal
+        
+        categories
+        |> List.map (fun (name, budgeted, spent) ->
+            let adjustedBudget = budgeted * adjustmentRatio
+            let difference = adjustedBudget - budgeted
+            (name, adjustedBudget, difference))
