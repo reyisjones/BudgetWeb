@@ -1,0 +1,260 @@
+{
+  "projectType": "Manufacturing",
+  "displayName": "Manufacturing Project",
+  "description": "Template for manufacturing, production, and assembly projects",
+  "icon": "🏭",
+  "defaultPhases": [
+    {
+      "name": "Product Design",
+      "description": "Engineering design, CAD modeling, and prototyping",
+      "plannedDuration": 45,
+      "budgetPercentage": 15,
+      "defaultTasks": [
+        {
+          "name": "Create CAD models",
+          "priority": "Critical",
+          "plannedHours": 120
+        },
+        {
+          "name": "Engineering analysis",
+          "priority": "High",
+          "plannedHours": 80
+        },
+        {
+          "name": "Build prototype",
+          "priority": "Critical",
+          "plannedHours": 100
+        },
+        {
+          "name": "Design validation testing",
+          "priority": "High",
+          "plannedHours": 60
+        }
+      ]
+    },
+    {
+      "name": "Manufacturing Setup",
+      "description": "Tooling, equipment setup, and process development",
+      "plannedDuration": 30,
+      "budgetPercentage": 20,
+      "defaultTasks": [
+        {
+          "name": "Design and fabricate tooling",
+          "priority": "Critical",
+          "plannedHours": 150
+        },
+        {
+          "name": "Configure production line",
+          "priority": "High",
+          "plannedHours": 100
+        },
+        {
+          "name": "Develop work instructions",
+          "priority": "High",
+          "plannedHours": 40
+        },
+        {
+          "name": "Train production staff",
+          "priority": "High",
+          "plannedHours": 60
+        }
+      ]
+    },
+    {
+      "name": "Pilot Production",
+      "description": "Initial production run for process validation",
+      "plannedDuration": 20,
+      "budgetPercentage": 15,
+      "defaultTasks": [
+        {
+          "name": "First article inspection",
+          "priority": "Critical",
+          "plannedHours": 40
+        },
+        {
+          "name": "Process capability study",
+          "priority": "High",
+          "plannedHours": 60
+        },
+        {
+          "name": "Quality control validation",
+          "priority": "High",
+          "plannedHours": 50
+        },
+        {
+          "name": "Pilot run (100 units)",
+          "priority": "Critical",
+          "plannedHours": 200
+        }
+      ]
+    },
+    {
+      "name": "Full Production",
+      "description": "Mass production phase",
+      "plannedDuration": 90,
+      "budgetPercentage": 45,
+      "defaultTasks": [
+        {
+          "name": "Production run - Batch 1",
+          "priority": "Critical",
+          "plannedHours": 400
+        },
+        {
+          "name": "Quality inspections - Batch 1",
+          "priority": "High",
+          "plannedHours": 80
+        },
+        {
+          "name": "Production run - Batch 2",
+          "priority": "Critical",
+          "plannedHours": 400
+        },
+        {
+          "name": "Quality inspections - Batch 2",
+          "priority": "High",
+          "plannedHours": 80
+        },
+        {
+          "name": "Continuous improvement activities",
+          "priority": "Medium",
+          "plannedHours": 60
+        }
+      ]
+    },
+    {
+      "name": "Quality Assurance & Shipping",
+      "description": "Final inspection, packaging, and delivery",
+      "plannedDuration": 15,
+      "budgetPercentage": 5,
+      "defaultTasks": [
+        {
+          "name": "Final quality audit",
+          "priority": "Critical",
+          "plannedHours": 80
+        },
+        {
+          "name": "Packaging and labeling",
+          "priority": "High",
+          "plannedHours": 100
+        },
+        {
+          "name": "Prepare shipping documentation",
+          "priority": "High",
+          "plannedHours": 30
+        },
+        {
+          "name": "Coordinate logistics",
+          "priority": "High",
+          "plannedHours": 40
+        }
+      ]
+    }
+  ],
+  "defaultBudgetCategories": [
+    {
+      "name": "Labor",
+      "percentage": 30
+    },
+    {
+      "name": "Materials",
+      "percentage": 40
+    },
+    {
+      "name": "Equipment & Tooling",
+      "percentage": 15
+    },
+    {
+      "name": "Quality Control",
+      "percentage": 5
+    },
+    {
+      "name": "Overhead",
+      "percentage": 5
+    },
+    {
+      "name": "Contingency",
+      "percentage": 5
+    }
+  ],
+  "defaultResourceTypes": [
+    {
+      "type": "Labor",
+      "examples": [
+        "Project Manager",
+        "Manufacturing Engineer",
+        "Quality Engineer",
+        "Production Supervisor",
+        "Machine Operator",
+        "Assembly Technician",
+        "Quality Inspector",
+        "Maintenance Technician"
+      ]
+    },
+    {
+      "type": "Equipment",
+      "examples": [
+        "CNC Machine",
+        "3D Printer",
+        "Assembly Line Equipment",
+        "Testing Equipment",
+        "Welding Equipment",
+        "Packaging Machinery",
+        "Material Handling Equipment"
+      ]
+    },
+    {
+      "type": "Material",
+      "examples": [
+        "Raw Materials",
+        "Components",
+        "Fasteners",
+        "Adhesives",
+        "Packaging Materials",
+        "Labels",
+        "Shipping Materials"
+      ]
+    }
+  ],
+  "defaultInventoryItems": [
+    {
+      "name": "Steel Sheet (4x8)",
+      "category": "Raw Materials",
+      "unit": "sheet",
+      "reorderPoint": 50
+    },
+    {
+      "name": "M8 Bolts",
+      "category": "Fasteners",
+      "unit": "box",
+      "reorderPoint": 20
+    },
+    {
+      "name": "Cutting Fluid",
+      "category": "Consumables",
+      "unit": "gallon",
+      "reorderPoint": 10
+    },
+    {
+      "name": "Cardboard Boxes",
+      "category": "Packaging",
+      "unit": "piece",
+      "reorderPoint": 100
+    }
+  ],
+  "defaultContractTypes": [
+    "Manufacturing Agreement",
+    "Material Supply Contract",
+    "Equipment Lease Agreement",
+    "Quality Assurance Agreement",
+    "Logistics Services Contract"
+  ],
+  "reportingFrequency": "daily",
+  "criticalMetrics": [
+    "Production Yield %",
+    "Defect Rate",
+    "OEE (Overall Equipment Effectiveness)",
+    "Cycle Time",
+    "Cost per Unit",
+    "Inventory Turnover"
+  ]
+}

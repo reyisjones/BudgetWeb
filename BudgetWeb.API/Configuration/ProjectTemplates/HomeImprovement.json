@@ -1,0 +1,267 @@
+{
+  "projectType": "HomeImprovement",
+  "displayName": "Home Improvement",
+  "description": "Template for home renovation and improvement projects",
+  "icon": "🏠",
+  "defaultPhases": [
+    {
+      "name": "Planning & Design",
+      "description": "Design concepts, material selection, and contractor bids",
+      "plannedDuration": 14,
+      "budgetPercentage": 10,
+      "defaultTasks": [
+        {
+          "name": "Create design plan",
+          "priority": "High",
+          "plannedHours": 20
+        },
+        {
+          "name": "Select materials and finishes",
+          "priority": "High",
+          "plannedHours": 16
+        },
+        {
+          "name": "Obtain contractor quotes",
+          "priority": "High",
+          "plannedHours": 12
+        },
+        {
+          "name": "Finalize budget",
+          "priority": "Critical",
+          "plannedHours": 8
+        }
+      ]
+    },
+    {
+      "name": "Demolition",
+      "description": "Removal of existing structures and materials",
+      "plannedDuration": 5,
+      "budgetPercentage": 10,
+      "defaultTasks": [
+        {
+          "name": "Remove old fixtures",
+          "priority": "High",
+          "plannedHours": 16
+        },
+        {
+          "name": "Tear out flooring",
+          "priority": "Medium",
+          "plannedHours": 12
+        },
+        {
+          "name": "Remove walls (if applicable)",
+          "priority": "High",
+          "plannedHours": 24
+        },
+        {
+          "name": "Haul away debris",
+          "priority": "Medium",
+          "plannedHours": 8
+        }
+      ]
+    },
+    {
+      "name": "Structural & Systems",
+      "description": "Electrical, plumbing, HVAC, and structural work",
+      "plannedDuration": 14,
+      "budgetPercentage": 35,
+      "defaultTasks": [
+        {
+          "name": "Update electrical wiring",
+          "priority": "Critical",
+          "plannedHours": 40
+        },
+        {
+          "name": "Update plumbing",
+          "priority": "Critical",
+          "plannedHours": 32
+        },
+        {
+          "name": "HVAC modifications",
+          "priority": "High",
+          "plannedHours": 24
+        },
+        {
+          "name": "Frame new walls",
+          "priority": "High",
+          "plannedHours": 30
+        },
+        {
+          "name": "Install windows/doors",
+          "priority": "High",
+          "plannedHours": 20
+        }
+      ]
+    },
+    {
+      "name": "Finishing",
+      "description": "Drywall, painting, flooring, and fixture installation",
+      "plannedDuration": 21,
+      "budgetPercentage": 35,
+      "defaultTasks": [
+        {
+          "name": "Hang and finish drywall",
+          "priority": "High",
+          "plannedHours": 48
+        },
+        {
+          "name": "Prime and paint",
+          "priority": "High",
+          "plannedHours": 40
+        },
+        {
+          "name": "Install flooring",
+          "priority": "High",
+          "plannedHours": 32
+        },
+        {
+          "name": "Install cabinets and countertops",
+          "priority": "High",
+          "plannedHours": 24
+        },
+        {
+          "name": "Install light fixtures",
+          "priority": "Medium",
+          "plannedHours": 16
+        },
+        {
+          "name": "Install plumbing fixtures",
+          "priority": "Medium",
+          "plannedHours": 12
+        }
+      ]
+    },
+    {
+      "name": "Final Details & Cleanup",
+      "description": "Final touches, inspections, and project closeout",
+      "plannedDuration": 7,
+      "budgetPercentage": 10,
+      "defaultTasks": [
+        {
+          "name": "Install trim and molding",
+          "priority": "Medium",
+          "plannedHours": 20
+        },
+        {
+          "name": "Touch-up painting",
+          "priority": "Low",
+          "plannedHours": 8
+        },
+        {
+          "name": "Final cleanup",
+          "priority": "Medium",
+          "plannedHours": 12
+        },
+        {
+          "name": "Final walkthrough",
+          "priority": "High",
+          "plannedHours": 4
+        }
+      ]
+    }
+  ],
+  "defaultBudgetCategories": [
+    {
+      "name": "Labor",
+      "percentage": 40
+    },
+    {
+      "name": "Materials",
+      "percentage": 40
+    },
+    {
+      "name": "Permits",
+      "percentage": 5
+    },
+    {
+      "name": "Equipment Rental",
+      "percentage": 5
+    },
+    {
+      "name": "Contingency",
+      "percentage": 10
+    }
+  ],
+  "defaultResourceTypes": [
+    {
+      "type": "Labor",
+      "examples": [
+        "General Contractor",
+        "Electrician",
+        "Plumber",
+        "HVAC Technician",
+        "Carpenter",
+        "Drywall Installer",
+        "Painter",
+        "Flooring Installer",
+        "Tile Setter"
+      ]
+    },
+    {
+      "type": "Material",
+      "examples": [
+        "Lumber",
+        "Drywall",
+        "Paint",
+        "Flooring",
+        "Cabinets",
+        "Countertops",
+        "Fixtures",
+        "Electrical Materials",
+        "Plumbing Materials",
+        "Tile",
+        "Trim and Molding"
+      ]
+    },
+    {
+      "type": "Equipment",
+      "examples": [
+        "Power Tools",
+        "Scaffolding",
+        "Dumpster",
+        "Floor Sander",
+        "Paint Sprayer"
+      ]
+    }
+  ],
+  "defaultInventoryItems": [
+    {
+      "name": "Drywall Screws",
+      "category": "Hardware",
+      "unit": "box",
+      "reorderPoint": 5
+    },
+    {
+      "name": "Joint Compound",
+      "category": "Materials",
+      "unit": "bucket",
+      "reorderPoint": 3
+    },
+    {
+      "name": "Paint Primer",
+      "category": "Materials",
+      "unit": "gallon",
+      "reorderPoint": 2
+    },
+    {
+      "name": "Painter's Tape",
+      "category": "Consumables",
+      "unit": "roll",
+      "reorderPoint": 5
+    }
+  ],
+  "defaultContractTypes": [
+    "General Contractor Agreement",
+    "Subcontractor Agreement",
+    "Material Supply Contract",
+    "Equipment Rental Agreement"
+  ],
+  "reportingFrequency": "weekly",
+  "criticalMetrics": [
+    "Schedule Adherence",
+    "Budget vs. Actual",
+    "Change Orders",
+    "Quality Issues",
+    "Homeowner Satisfaction"
+  ]
+}

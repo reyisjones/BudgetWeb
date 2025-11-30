@@ -1,0 +1,273 @@
+{
+  "projectType": "FilmProduction",
+  "displayName": "Film Production",
+  "description": "Template for film, TV, and video production projects",
+  "icon": "🎬",
+  "defaultPhases": [
+    {
+      "name": "Development",
+      "description": "Script development, concept, and initial planning",
+      "plannedDuration": 60,
+      "budgetPercentage": 5,
+      "defaultTasks": [
+        {
+          "name": "Script finalization",
+          "priority": "Critical",
+          "plannedHours": 120
+        },
+        {
+          "name": "Budget breakdown",
+          "priority": "High",
+          "plannedHours": 40
+        },
+        {
+          "name": "Secure financing",
+          "priority": "Critical",
+          "plannedHours": 80
+        }
+      ]
+    },
+    {
+      "name": "Pre-Production",
+      "description": "Casting, location scouting, crew hiring, and production prep",
+      "plannedDuration": 90,
+      "budgetPercentage": 15,
+      "defaultTasks": [
+        {
+          "name": "Cast principal roles",
+          "priority": "Critical",
+          "plannedHours": 100
+        },
+        {
+          "name": "Scout and secure locations",
+          "priority": "High",
+          "plannedHours": 80
+        },
+        {
+          "name": "Hire department heads",
+          "priority": "Critical",
+          "plannedHours": 60
+        },
+        {
+          "name": "Create shooting schedule",
+          "priority": "High",
+          "plannedHours": 40
+        },
+        {
+          "name": "Design sets and costumes",
+          "priority": "High",
+          "plannedHours": 120
+        },
+        {
+          "name": "Conduct tech scouts",
+          "priority": "Medium",
+          "plannedHours": 40
+        }
+      ]
+    },
+    {
+      "name": "Principal Photography",
+      "description": "Main shooting phase with cast and crew",
+      "plannedDuration": 45,
+      "budgetPercentage": 50,
+      "defaultTasks": [
+        {
+          "name": "Day 1-10 shooting",
+          "priority": "Critical",
+          "plannedHours": 160
+        },
+        {
+          "name": "Day 11-20 shooting",
+          "priority": "Critical",
+          "plannedHours": 160
+        },
+        {
+          "name": "Day 21-30 shooting",
+          "priority": "Critical",
+          "plannedHours": 160
+        },
+        {
+          "name": "Pickup shots",
+          "priority": "Medium",
+          "plannedHours": 40
+        }
+      ]
+    },
+    {
+      "name": "Post-Production",
+      "description": "Editing, VFX, sound design, and color grading",
+      "plannedDuration": 120,
+      "budgetPercentage": 25,
+      "defaultTasks": [
+        {
+          "name": "Picture editing",
+          "priority": "Critical",
+          "plannedHours": 400
+        },
+        {
+          "name": "Visual effects",
+          "priority": "High",
+          "plannedHours": 300
+        },
+        {
+          "name": "Sound design and mixing",
+          "priority": "High",
+          "plannedHours": 200
+        },
+        {
+          "name": "Music composition and scoring",
+          "priority": "High",
+          "plannedHours": 160
+        },
+        {
+          "name": "Color grading",
+          "priority": "High",
+          "plannedHours": 100
+        },
+        {
+          "name": "Final mix and mastering",
+          "priority": "Critical",
+          "plannedHours": 80
+        }
+      ]
+    },
+    {
+      "name": "Distribution & Marketing",
+      "description": "Film festival submissions, marketing, and distribution",
+      "plannedDuration": 60,
+      "budgetPercentage": 5,
+      "defaultTasks": [
+        {
+          "name": "Create marketing materials",
+          "priority": "High",
+          "plannedHours": 80
+        },
+        {
+          "name": "Festival submissions",
+          "priority": "Medium",
+          "plannedHours": 40
+        },
+        {
+          "name": "Secure distribution deals",
+          "priority": "High",
+          "plannedHours": 60
+        },
+        {
+          "name": "Plan premiere event",
+          "priority": "Medium",
+          "plannedHours": 40
+        }
+      ]
+    }
+  ],
+  "defaultBudgetCategories": [
+    {
+      "name": "Above-the-Line",
+      "percentage": 30,
+      "subcategories": ["Producer", "Director", "Writers", "Cast"]
+    },
+    {
+      "name": "Below-the-Line",
+      "percentage": 40,
+      "subcategories": ["Crew", "Equipment", "Locations", "Sets", "Wardrobe", "Props"]
+    },
+    {
+      "name": "Post-Production",
+      "percentage": 20,
+      "subcategories": ["Editing", "VFX", "Sound", "Music"]
+    },
+    {
+      "name": "Marketing & Distribution",
+      "percentage": 5
+    },
+    {
+      "name": "Contingency",
+      "percentage": 5
+    }
+  ],
+  "defaultResourceTypes": [
+    {
+      "type": "Labor",
+      "examples": [
+        "Director",
+        "Producer",
+        "Director of Photography",
+        "1st Assistant Director",
+        "Production Designer",
+        "Gaffer",
+        "Key Grip",
+        "Sound Mixer",
+        "Editor",
+        "VFX Supervisor",
+        "Composer"
+      ]
+    },
+    {
+      "type": "Equipment",
+      "examples": [
+        "Camera Package",
+        "Lighting Package",
+        "Grip Equipment",
+        "Sound Recording Equipment",
+        "Editing Suite",
+        "Trucks and Vehicles",
+        "Generators"
+      ]
+    },
+    {
+      "type": "Material",
+      "examples": [
+        "Set Construction Materials",
+        "Props",
+        "Costumes",
+        "Makeup Supplies",
+        "Catering",
+        "Hard Drives",
+        "Film Stock"
+      ]
+    }
+  ],
+  "defaultInventoryItems": [
+    {
+      "name": "Camera Memory Cards",
+      "category": "Equipment",
+      "unit": "piece",
+      "reorderPoint": 5
+    },
+    {
+      "name": "Gaffer Tape",
+      "category": "Consumables",
+      "unit": "roll",
+      "reorderPoint": 10
+    },
+    {
+      "name": "Batteries (V-Mount)",
+      "category": "Equipment",
+      "unit": "piece",
+      "reorderPoint": 8
+    },
+    {
+      "name": "Hard Drives (4TB)",
+      "category": "Storage",
+      "unit": "piece",
+      "reorderPoint": 3
+    }
+  ],
+  "defaultContractTypes": [
+    "Production Services Agreement",
+    "Crew Deal Memo",
+    "Actor Contract (SAG)",
+    "Location Agreement",
+    "Equipment Rental Agreement",
+    "Music License",
+    "Distribution Agreement"
+  ],
+  "reportingFrequency": "daily_during_production",
+  "criticalMetrics": [
+    "Schedule Variance (days ahead/behind)",
+    "Budget Burn Rate",
+    "Pages Shot vs. Pages Scheduled",
+    "Equipment Utilization",
+    "Crew Overtime Hours"
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "projectType": "Construction",
+  "displayName": "Construction Project",
+  "description": "Template for construction and building projects",
+  "icon": "🏗️",
+  "defaultPhases": [
+    {
+      "name": "Planning & Design",
+      "description": "Architectural design, permitting, and project planning",
+      "plannedDuration": 30,
+      "budgetPercentage": 10,
+      "defaultTasks": [
+        {
+          "name": "Create architectural drawings",
+          "priority": "High",
+          "plannedHours": 80
+        },
+        {
+          "name": "Submit permit applications",
+          "priority": "Critical",
+          "plannedHours": 20
+        },
+        {
+          "name": "Finalize project schedule",
+          "priority": "High",
+          "plannedHours": 40
+        }
+      ]
+    },
+    {
+      "name": "Site Preparation",
+      "description": "Land clearing, excavation, and foundation prep",
+      "plannedDuration": 20,
+      "budgetPercentage": 15,
+      "defaultTasks": [
+        {
+          "name": "Clear and grade site",
+          "priority": "High",
+          "plannedHours": 60
+        },
+        {
+          "name": "Install temporary utilities",
+          "priority": "Medium",
+          "plannedHours": 30
+        },
+        {
+          "name": "Pour foundation",
+          "priority": "Critical",
+          "plannedHours": 120
+        }
+      ]
+    },
+    {
+      "name": "Structure Construction",
+      "description": "Framing, structural elements, and building shell",
+      "plannedDuration": 90,
+      "budgetPercentage": 40,
+      "defaultTasks": [
+        {
+          "name": "Erect structural framing",
+          "priority": "Critical",
+          "plannedHours": 300
+        },
+        {
+          "name": "Install roofing",
+          "priority": "High",
+          "plannedHours": 200
+        },
+        {
+          "name": "Install exterior walls and windows",
+          "priority": "High",
+          "plannedHours": 150
+        }
+      ]
+    },
+    {
+      "name": "Interior Work",
+      "description": "Electrical, plumbing, HVAC, and interior finishes",
+      "plannedDuration": 60,
+      "budgetPercentage": 25,
+      "defaultTasks": [
+        {
+          "name": "Install electrical systems",
+          "priority": "High",
+          "plannedHours": 180
+        },
+        {
+          "name": "Install plumbing",
+          "priority": "High",
+          "plannedHours": 120
+        },
+        {
+          "name": "Install HVAC",
+          "priority": "High",
+          "plannedHours": 100
+        },
+        {
+          "name": "Drywall and painting",
+          "priority": "Medium",
+          "plannedHours": 200
+        },
+        {
+          "name": "Install flooring",
+          "priority": "Medium",
+          "plannedHours": 80
+        }
+      ]
+    },
+    {
+      "name": "Final Inspections & Handover",
+      "description": "Quality checks, inspections, and project closeout",
+      "plannedDuration": 15,
+      "budgetPercentage": 10,
+      "defaultTasks": [
+        {
+          "name": "Conduct final inspections",
+          "priority": "Critical",
+          "plannedHours": 40
+        },
+        {
+          "name": "Address punch list items",
+          "priority": "High",
+          "plannedHours": 60
+        },
+        {
+          "name": "Obtain certificate of occupancy",
+          "priority": "Critical",
+          "plannedHours": 20
+        },
+        {
+          "name": "Client walkthrough and handover",
+          "priority": "High",
+          "plannedHours": 16
+        }
+      ]
+    }
+  ],
+  "defaultBudgetCategories": [
+    {
+      "name": "Labor",
+      "percentage": 35
+    },
+    {
+      "name": "Materials",
+      "percentage": 40
+    },
+    {
+      "name": "Equipment",
+      "percentage": 10
+    },
+    {
+      "name": "Permits",
+      "percentage": 5
+    },
+    {
+      "name": "Overhead",
+      "percentage": 5
+    },
+    {
+      "name": "Contingency",
+      "percentage": 5
+    }
+  ],
+  "defaultResourceTypes": [
+    {
+      "type": "Labor",
+      "examples": [
+        "Project Manager",
+        "Site Supervisor",
+        "Carpenter",
+        "Electrician",
+        "Plumber",
+        "HVAC Technician",
+        "Laborer"
+      ]
+    },
+    {
+      "type": "Material",
+      "examples": [
+        "Concrete",
+        "Lumber",
+        "Rebar",
+        "Roofing Materials",
+        "Windows",
+        "Doors",
+        "Drywall",
+        "Paint",
+        "Flooring"
+      ]
+    },
+    {
+      "type": "Equipment",
+      "examples": [
+        "Excavator",
+        "Crane",
+        "Concrete Mixer",
+        "Scaffolding",
+        "Power Tools",
+        "Safety Equipment"
+      ]
+    }
+  ],
+  "defaultInventoryItems": [
+    {
+      "name": "Lumber 2x4x8",
+      "category": "Materials",
+      "unit": "piece",
+      "reorderPoint": 100
+    },
+    {
+      "name": "Concrete Mix",
+      "category": "Materials",
+      "unit": "bag",
+      "reorderPoint": 50
+    },
+    {
+      "name": "Nails",
+      "category": "Hardware",
+      "unit": "box",
+      "reorderPoint": 20
+    },
+    {
+      "name": "Safety Vests",
+      "category": "Safety",
+      "unit": "piece",
+      "reorderPoint": 10
+    }
+  ],
+  "defaultContractTypes": [
+    "General Contract",
+    "Subcontractor Agreement",
+    "Material Supply Contract",
+    "Equipment Rental Agreement",
+    "Architect Services Agreement"
+  ],
+  "reportingFrequency": "weekly",
+  "criticalMetrics": [
+    "Schedule Performance Index (SPI)",
+    "Cost Performance Index (CPI)",
+    "Budget Variance",
+    "Task Completion Rate",
+    "Safety Incidents"
+  ]
+}
