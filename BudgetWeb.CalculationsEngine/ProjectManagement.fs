@@ -294,7 +294,7 @@ module ProjectManagement =
         project.Resources
         |> List.choose (fun r ->
             match r.ResourceType with
-            | Labor details -> Some (r.ConsumedQuantity * details.HourlyRate)
+            | ResourceType.Labor details -> Some (r.ConsumedQuantity * details.HourlyRate)
             | _ -> None)
         |> List.sum
 
@@ -303,7 +303,7 @@ module ProjectManagement =
         project.Resources
         |> List.choose (fun r ->
             match r.ResourceType with
-            | Material details -> Some (r.ConsumedQuantity * details.UnitCost)
+            | ResourceType.Material details -> Some (r.ConsumedQuantity * details.UnitCost)
             | _ -> None)
         |> List.sum
 
@@ -312,7 +312,7 @@ module ProjectManagement =
         project.Resources
         |> List.choose (fun r ->
             match r.ResourceType with
-            | Equipment details -> Some (r.ConsumedQuantity * details.DailyRate)
+            | ResourceType.Equipment details -> Some (r.ConsumedQuantity * details.DailyRate)
             | _ -> None)
         |> List.sum
 
