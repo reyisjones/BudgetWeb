@@ -7,6 +7,9 @@ import BudgetCreate from './pages/Budgets/BudgetCreate'
 import ProjectList from './pages/Projects/ProjectList'
 import ProjectDetail from './pages/Projects/ProjectDetail'
 import ProjectCreate from './pages/Projects/ProjectCreate'
+import ProjectEdit from './pages/Projects/ProjectEdit'
+import ProjectDashboard from './pages/ProjectDashboard'
+import TaskBoard from './pages/Projects/TaskBoard'
 import TransactionList from './pages/Transactions/TransactionList'
 import TransactionCreate from './pages/Transactions/TransactionCreate'
 import Reports from './pages/Reports'
@@ -28,6 +31,9 @@ function App() {
         <Route path="projects" element={<ProjectList />} />
         <Route path="projects/create" element={<ProjectCreate />} />
         <Route path="projects/:id" element={<ProjectDetail />} />
+        <Route path="projects/:projectId/edit" element={<ProjectEdit />} />
+        <Route path="projects/:projectId/dashboard" element={<ProjectDashboard />} />
+        <Route path="projects/:projectId/tasks" element={<TaskBoard />} />
         
         {/* Transaction Routes */}
         <Route path="transactions" element={<TransactionList />} />
